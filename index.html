@@ -4,83 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ACN Bank — Agentic Banking</title>
-    <meta name="description" content="Banking on your terms. Powered by Accenture × Google GECX AI." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-
-    <!-- Google Chat Messenger SDK v1.16 -->
+    <!-- Google Chat Messenger SDK v1.16 (hidden transport layer) -->
     <script defer src="https://www.gstatic.com/chat-messenger/sdk/prod/v1.16/chat-messenger.js"></script>
     <link rel="stylesheet" href="https://www.gstatic.com/chat-messenger/sdk/prod/v1.16/themes/chat-messenger-default.css" />
     <link rel="stylesheet" href="https://www.gstatic.com/chat-messenger/sdk/prod/v1.16/themes/chat-messenger-layout.css" />
-
-    <script>
-      var DEPLOYMENT = 'projects/483471568825/locations/us/apps/27be6c70-74dc-4e50-a3e8-25b032e7c965/deployments/7cbb68f9-147f-4698-be02-e7ea5fa5d1a3';
-      function registerChatSdk() {
-        try {
-          window.chatSdk.registerContext(
-            window.chatSdk.prebuilts.ces.createContext({
-              deploymentName: DEPLOYMENT,
-              tokenBroker: { enableTokenBroker: true, enableRecaptcha: false },
-              enableWelcomeEvent: true,
-            })
-          );
-          console.log('[ACN Bank] Chat SDK registered');
-        } catch(e) {
-          console.error('[ACN Bank] Chat SDK error:', e);
-        }
-      }
-      if (window.chatSdk) {
-        registerChatSdk();
-      } else {
-        window.addEventListener('chat-messenger-loaded', registerChatSdk);
-      }
-
-      // Called by our React FAB
-      window.acnToggleChat = function(open) {
-        var panel = document.getElementById('acn-chat-panel');
-        if (!panel) return;
-        panel.style.height = open ? '600px' : '0';
-        panel.style.opacity = open ? '1' : '0';
-        panel.style.pointerEvents = open ? 'all' : 'none';
-      };
-    </script>
-
-    <style>
-      #acn-chat-panel {
-        position: fixed;
-        bottom: 88px;
-        right: 24px;
-        width: 380px;
-        height: 0;
-        opacity: 0;
-        pointer-events: none;
-        overflow: hidden;
-        border-radius: 16px;
-        box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-        transition: height 0.25s ease, opacity 0.2s ease;
-        z-index: 1000;
-      }
-      #acn-chat-panel chat-messenger {
-        width: 100%;
-        height: 600px;
-        display: block;
-      }
-    </style>
   </head>
   <body>
-    <!-- Chat panel: always in DOM so SDK initialises, height-clipped when closed -->
-    <div id="acn-chat-panel">
-      <chat-messenger url-allowlist="*">
-        <chat-messenger-container
-          chat-title="ACN Bank Assistant"
-          chat-title-icon="https://gstatic.com/dialogflow-console/common/assets/ccai-favicons/conversational_agents.png"
-          enable-audio-input
-        >
-          <chat-reset-session-button slot="titlebar-actions" title-text="New chat"></chat-reset-session-button>
-          <chat-messenger-close-button slot="titlebar-actions" title-text="Close"></chat-messenger-close-button>
-        </chat-messenger-container>
-      </chat-messenger>
-    </div>
-
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

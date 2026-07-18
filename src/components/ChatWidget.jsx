@@ -1,60 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
-
-const DEPLOYMENT_NAME = import.meta.env.VITE_DEPLOYMENT_NAME ||
-  'projects/483471568825/locations/us/apps/27be6c70-74dc-4e50-a3e8-25b032e7c965/deployments/7cbb68f9-147f-4698-be02-e7ea5fa5d1a3';
+import React, { useState } from 'react';
+import ChatWindow from './ChatWindow.jsx';
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [sdkReady, setSdkReady] = useState(false);
-  const registeredRef = useRef(false);
-
-  useEffect(() => {
-    function registerSdk() {
-      if (registeredRef.current) return;
-      try {
-        window.chatSdk.registerContext(
-          window.chatSdk.prebuilts.ces.createContext({
-            deploymentName: DEPLOYMENT_NAME,
-            tokenBroker: {
-              enableTokenBroker: true,
-              enableRecaptcha: false,
-            },
-          })
-        );
-        registeredRef.current = true;
-        setSdkReady(true);
-      } catch (err) {
-        console.error('[ACN Bank] SDK registration failed:', err);
-      }
-    }
-
-    if (window.chatSdk) {
-      registerSdk();
-    } else {
-      window.addEventListener('chat-messenger-loaded', registerSdk, { once: true });
-    }
-
-    return () => {
-      window.removeEventListener('chat-messenger-loaded', registerSdk);
-    };
-  }, []);
-
-  function toggleChat() {
-    const nowOpen = !open;
-    setOpen(nowOpen);
-    // Toggle the panel wrapper — chat-messenger stays mounted so SDK stays initialised
-    window.acnToggleChat?.(nowOpen);
-  }
 
   return (
     <>
+      <ChatWindow
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onReset={() => {}}
+        intent={null}
+      />
+
       <button
         style={s.fab}
-        onClick={toggleChat}
-        aria-label={open ? 'Close chat assistant' : 'Open chat assistant'}
+        onClick={() => setOpen(o => !o)}
+        aria-label={open ? 'Close chat' : 'Open chat'}
       >
         <span style={{ fontSize: 22 }}>{open ? '✕' : '💬'}</span>
-        {!open && <div style={s.fabDot} />}
+        {!open && <div style={s.dot} />}
       </button>
     </>
   );
@@ -75,11 +40,10 @@ const s = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 1001,
-    transition: 'background 0.15s',
+    zIndex: 10001,
     boxShadow: '0 4px 16px rgba(161,0,255,0.35)',
   },
-  fabDot: {
+  dot: {
     position: 'absolute',
     top: 3,
     right: 3,
