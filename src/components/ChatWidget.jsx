@@ -40,45 +40,14 @@ export default function ChatWidget() {
   }, []);
 
   function toggleChat() {
-    setOpen(o => !o);
-    const el = document.querySelector('chat-messenger');
-    if (el) {
-      if (!open) el.open?.();
-      else el.close?.();
-    }
+    const nowOpen = !open;
+    setOpen(nowOpen);
+    // Toggle the panel wrapper — chat-messenger stays mounted so SDK stays initialised
+    window.acnToggleChat?.(nowOpen);
   }
 
   return (
     <>
-      <div style={s.sdkHost}>
-        <chat-messenger
-          url-allowlist="*"
-          custom-message-renderer
-          style={{ display: open ? 'block' : 'none' }}
-        >
-          <chat-messenger-container
-            chat-title="ACN Bank Assistant"
-            chat-title-icon="https://gstatic.com/dialogflow-console/common/assets/ccai-favicons/conversational_agents.png"
-            enable-file-upload
-            enable-audio-input
-          >
-            <chat-reset-session-button
-              slot="titlebar-actions"
-              title-text="New chat"
-            />
-            <chat-toggle-dialog-button
-              slot="titlebar-actions"
-              title-text-expanded="Collapse"
-              title-text-collapsed="Expand"
-            />
-            <chat-messenger-close-button
-              slot="titlebar-actions"
-              title-text="Close"
-            />
-          </chat-messenger-container>
-        </chat-messenger>
-      </div>
-
       <button
         style={s.fab}
         onClick={toggleChat}
@@ -92,13 +61,6 @@ export default function ChatWidget() {
 }
 
 const s = {
-  sdkHost: {
-    position: 'fixed',
-    bottom: 88,
-    right: 24,
-    zIndex: 1000,
-    width: 380,
-  },
   fab: {
     position: 'fixed',
     bottom: 24,
