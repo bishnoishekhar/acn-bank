@@ -15,7 +15,7 @@ export function initGecx() {
       window.chatSdk.registerContext(
         window.chatSdk.prebuilts.ces.createContext({
           deploymentName: DEPLOYMENT,
-          tokenBroker: { enableTokenBroker: true, enableRecaptcha: false },
+          tokenBroker: { enableTokenBroker: false, enableRecaptcha: false },
           enableWelcomeEvent: true,
         })
       );
