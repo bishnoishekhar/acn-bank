@@ -432,20 +432,6 @@ export default function ChatWindow({ isOpen, onClose, onReset, intent }) {
   /* ── Render ── */
   return (
     <>
-      <div style={{ position: 'fixed', bottom: 0, right: 0, visibility: 'hidden', height: 0, width: 0 }}>
-        <chat-messenger
-          id="gecx-messenger"
-          url-allowlist="*"
-          language-code="en"
-          max-query-length="-1"
-          style={{ visibility: 'hidden', height: 0, width: 0, display: 'block', position: 'fixed', bottom: 0, right: 0 }}
-        >
-          <chat-messenger-container chat-title="ACN Bank AI">
-            <chat-reset-session-button slot="titlebar-actions" title-text="New conversation" />
-          </chat-messenger-container>
-        </chat-messenger>
-      </div>
-
       <div className={`acn-chat-window${isOpen ? '' : ' closed'}`}>
 
         <div className="acn-chat-header">

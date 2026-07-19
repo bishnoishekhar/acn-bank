@@ -1,54 +1,24 @@
-const DEPLOYMENT = 'projects/483471568825/locations/us/apps/27be6c70-74dc-4e50-a3e8-25b032e7c965/deployments/7cbb68f9-147f-4698-be02-e7ea5fa5d1a3';
-
-let _initDone = false;
 let _onResponse = null;
 
 export function setResponseHandler(fn) {
   _onResponse = fn;
 }
 
-export function initGecx() {
-  if (_initDone) return;
-  _initDone = true;
-  const doRegister = () => {
-    try {
-      window.chatSdk.registerContext(
-        window.chatSdk.prebuilts.ces.createContext({
-          deploymentName: DEPLOYMENT,
-          tokenBroker: { enableTokenBroker: false, enableRecaptcha: false },
-          enableWelcomeEvent: true,
-        })
-      );
-      console.log('[ACN] GECX registered');
-    } catch (e) {
-      console.error('[ACN] GECX init error:', e);
-    }
-  };
-  if (window.chatSdk) {
-    doRegister();
-  } else {
-    window.addEventListener('chat-messenger-loaded', doRegister);
-  }
-}
-
-export function resetGecx() {
-  // Click the hidden GECX reset button to clear session token
-  const resetBtn = document.querySelector('chat-reset-session-button');
-  if (resetBtn) resetBtn.click();
-  // Try messenger built-in reset
-  const messenger = document.querySelector('chat-messenger');
-  if (messenger && typeof messenger.resetSession === 'function') messenger.resetSession();
-  // Re-register with fresh session
-  _initDone = false;
-  setTimeout(() => initGecx(), 500);
-}
-
-/* ── Send message to GECX ── */
+/* ── Send message via the SDK element ── */
 export function gecxSend(text) {
   const m = document.querySelector('chat-messenger');
+  console.log('[ACN] gecxSend el:', !!m, 'sendRequest:', typeof m?.sendRequest);
   if (m && typeof m.sendRequest === 'function') {
     m.sendRequest('query', text);
   }
+}
+
+/* ── Reset session ── */
+export function resetGecx() {
+  const resetBtn = document.querySelector('chat-reset-session-button');
+  if (resetBtn) resetBtn.click();
+  const m = document.querySelector('chat-messenger');
+  if (m && typeof m.resetSession === 'function') m.resetSession();
 }
 
 let _interceptorInstalled = false;
@@ -73,20 +43,19 @@ export function installFetchInterceptor() {
   };
 }
 
-/* ── Fallback event listeners ── */
+/* ── Event listener fallback ── */
 export function installEventListeners() {
   ['df-response-received', 'ces-response-received', 'chat-response-received'].forEach((n) => {
     window.addEventListener(n, (e) => {
-      if (_onResponse && e.detail?.outputs) {
-        _onResponse(e.detail.outputs);
-      }
+      if (_onResponse && e.detail?.outputs) _onResponse(e.detail.outputs);
     });
   });
 }
 
-/* ── Bootstrap — install interceptors on page load only, NOT initGecx ── */
 export function bootstrapGecx() {
   installFetchInterceptor();
   installEventListeners();
-  /* Do NOT call initGecx here — enableWelcomeEvent must fire AFTER chat opens */
 }
+
+/* ── initGecx: no-op — registration now done in index.html before React loads ── */
+export function initGecx() {}
