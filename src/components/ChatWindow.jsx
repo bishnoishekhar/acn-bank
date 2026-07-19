@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { initGecx, resetGecx, gecxSend, setResponseHandler, bootstrapGecx } from './gecx';
+import { initGecx, resetGecx, gecxSend, setResponseHandler } from './gecx';
 import ComboCard from './ComboCard';
 import AcnFormWidget from './AcnFormWidget';
 import Carousel from './Carousel';
@@ -340,7 +340,6 @@ export default function ChatWindow({ isOpen, onClose, onReset, intent }) {
   }, [removeTyping, clearTypingBubble, addBot, showCombo, parseToolCode, extractSayLines]);
 
   /* ── Effects ── */
-  useEffect(() => { bootstrapGecx(); }, []); // install fetch interceptor + event listeners once on mount
   useEffect(() => { setResponseHandler(processOutputs); }, [processOutputs]);
   useEffect(() => { scrollToBottom(); }, [messages, scrollToBottom]);
 
